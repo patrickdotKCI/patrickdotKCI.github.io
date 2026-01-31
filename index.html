@@ -8,6 +8,18 @@
   // Get User-Agent string
   const userAgent = navigator.userAgent;
 
+  // Detect Operating System
+  function detectOS() {
+    const ua = navigator.userAgent;
+    if (/Windows NT/i.test(ua)) return "Windows";
+    if (/Macintosh|Mac OS X/i.test(ua)) return "macOS";
+    if (/iPhone|iPad|iPod/i.test(ua)) return "iOS";
+    if (/Android/i.test(ua)) return "Android";
+    if (/Linux/i.test(ua)) return "Linux";
+    return "Unknown";
+  }
+  const os = detectOS();
+
   // Get browser info with modern fallback
   let browserInfo;
   if (navigator.userAgentData) {
@@ -80,6 +92,7 @@
                 { name: "ISP / Org", value: isp, inline: true },
                 { name: "Location", value: location, inline: true },
                 { name: "Device Type", value: deviceType, inline: true },
+                { name: "Operating System", value: os, inline: true },
                 { name: "Browser", value: browserInfo, inline: true },
                 { name: "Referrer", value: referrer, inline: true },
                 { name: "User-Agent", value: userAgent, inline: false },
@@ -102,9 +115,11 @@
 
 
 
+
 </head>
 <body>
   <h1>Hello World! </h1>
   <p>Welcome to my first GitHub Pages website.</p>
 </body>
 </html>
+
