@@ -76,7 +76,7 @@
       const isp = data.org || "Unknown";
       const location = `${data.city || "Unknown"}, ${data.region || "Unknown"}, ${data.country || "Unknown"}`;
 
-      // Send all info to Discord webhook using an embed
+      // Send all info to Discord webhook using an improved embed
       return fetch(WEBHOOK_URL, {
         method: "POST",
         headers: {
@@ -84,36 +84,35 @@
         },
         body: JSON.stringify({
           embeds: [
-           {
-      title: "🆕 New Visitor Info",
-      description: "A visitor just accessed your site.",
-      color: 3447003, // Blue
-      fields: [
-        // Location & IP info
-        { name: "🌐 IP Address", value: ip, inline: true },
-        { name: "🏢 ISP / Org", value: isp, inline: true },
-        { name: "📍 Location", value: location, inline: true },
+            {
+              title: "🆕 New Visitor Info",
+              description: "A visitor just accessed your site.",
+              color: 3447003, // Blue
+              fields: [
+                // Location & IP info
+                { name: "🌐 IP Address", value: ip, inline: true },
+                { name: "🏢 ISP / Org", value: isp, inline: true },
+                { name: "📍 Location", value: location, inline: true },
 
-        // Device & OS
-        { name: "💻 Device Type", value: deviceType, inline: true },
-        { name: "🖥️ Operating System", value: os, inline: true },
-        { name: "🖱️ Browser", value: browserInfo, inline: true },
+                // Device & OS
+                { name: "💻 Device Type", value: deviceType, inline: true },
+                { name: "🖥️ Operating System", value: os, inline: true },
+                { name: "🖱️ Browser", value: browserInfo, inline: true },
 
-        // Referrer
-        { name: "🔗 Referrer", value: referrer, inline: false },
+                // Referrer
+                { name: "🔗 Referrer", value: referrer, inline: false },
 
-        // Technical info
-        { name: "🖼️ Screen Resolution", value: screenRes, inline: true },
-        { name: "🧠 CPU Cores", value: cpuCores.toString(), inline: true },
-        { name: "🌐 Language", value: browserLang, inline: true },
-        { name: "⏰ Time Zone", value: timeZone, inline: true },
+                // Technical info
+                { name: "🖼️ Screen Resolution", value: screenRes, inline: true },
+                { name: "🧠 CPU Cores", value: cpuCores.toString(), inline: true },
+                { name: "🌐 Language", value: browserLang, inline: true },
+                { name: "⏰ Time Zone", value: timeZone, inline: true },
 
-        // User-Agent last so it doesn’t clutter
-        { name: "📝 User-Agent", value: userAgent, inline: false }
-      ],
-      timestamp: new Date().toISOString(),
-      footer: { text: "Visitor Tracker" }
-              timestamp: new Date().toISOString()
+                // User-Agent last
+                { name: "📝 User-Agent", value: userAgent, inline: false }
+              ],
+              timestamp: new Date().toISOString(),
+              footer: { text: "Visitor Tracker" }
             }
           ]
         })
@@ -123,6 +122,7 @@
       console.error("Error sending data:", err);
     });
 </script>
+
 
 
 
