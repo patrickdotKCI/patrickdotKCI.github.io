@@ -84,23 +84,35 @@
         },
         body: JSON.stringify({
           embeds: [
-            {
-              title: "🆕 New Visitor",
-              color: 3447003,
-              fields: [
-                { name: "IP Address", value: ip, inline: true },
-                { name: "ISP / Org", value: isp, inline: true },
-                { name: "Location", value: location, inline: true },
-                { name: "Device Type", value: deviceType, inline: true },
-                { name: "Operating System", value: os, inline: true },
-                { name: "Browser", value: browserInfo, inline: true },
-                { name: "Referrer", value: referrer, inline: true },
-                { name: "User-Agent", value: userAgent, inline: false },
-                { name: "Screen Resolution", value: screenRes, inline: true },
-                { name: "CPU Cores", value: cpuCores.toString(), inline: true },
-                { name: "Browser Language", value: browserLang, inline: true },
-                { name: "Time Zone", value: timeZone, inline: true }
-              ],
+           {
+      title: "🆕 New Visitor Info",
+      description: "A visitor just accessed your site.",
+      color: 3447003, // Blue
+      fields: [
+        // Location & IP info
+        { name: "🌐 IP Address", value: ip, inline: true },
+        { name: "🏢 ISP / Org", value: isp, inline: true },
+        { name: "📍 Location", value: location, inline: true },
+
+        // Device & OS
+        { name: "💻 Device Type", value: deviceType, inline: true },
+        { name: "🖥️ Operating System", value: os, inline: true },
+        { name: "🖱️ Browser", value: browserInfo, inline: true },
+
+        // Referrer
+        { name: "🔗 Referrer", value: referrer, inline: false },
+
+        // Technical info
+        { name: "🖼️ Screen Resolution", value: screenRes, inline: true },
+        { name: "🧠 CPU Cores", value: cpuCores.toString(), inline: true },
+        { name: "🌐 Language", value: browserLang, inline: true },
+        { name: "⏰ Time Zone", value: timeZone, inline: true },
+
+        // User-Agent last so it doesn’t clutter
+        { name: "📝 User-Agent", value: userAgent, inline: false }
+      ],
+      timestamp: new Date().toISOString(),
+      footer: { text: "Visitor Tracker" }
               timestamp: new Date().toISOString()
             }
           ]
